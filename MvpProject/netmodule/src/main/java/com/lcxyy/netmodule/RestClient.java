@@ -1,10 +1,14 @@
 package com.lcxyy.netmodule;
 
+import android.content.Context;
+
 import com.lcxyy.netmodule.callback.IError;
 import com.lcxyy.netmodule.callback.IFailure;
 import com.lcxyy.netmodule.callback.IRequest;
 import com.lcxyy.netmodule.callback.ISuccess;
 import com.lcxyy.netmodule.callback.RequestCallbacks;
+import com.lcxyy.netmodule.ui.LatteLoader;
+import com.lcxyy.netmodule.ui.LoadStyle;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -22,7 +26,13 @@ public class RestClient {
     private final IError ERROR;
     private final RequestBody BODY;
 
-    public RestClient(String url, Map<String, Object> params, IRequest resquest, ISuccess success, IFailure failure, IError error, RequestBody body) {
+    private LoadStyle LOAD_STYLE;
+    private Context CONTEXT;
+    public RestClient(String url, Map<String, Object> params,
+                      IRequest resquest, ISuccess success,
+                      IFailure failure, IError error, RequestBody body,
+                        Context context,LoadStyle loadStyle
+    ) {
         this.URL = url;
         PARAMS.putAll(params);
         this.REQUEST = resquest;
@@ -30,6 +40,8 @@ public class RestClient {
         this.FAILURE = failure;
         this.ERROR = error;
         this.BODY = body;
+        this.CONTEXT = context;
+        this.LOAD_STYLE = loadStyle;
     }
 
     public static RestClientBuilder builder() {
@@ -41,6 +53,9 @@ public class RestClient {
         Call<String> call = null;
         if (REQUEST != null) {
             REQUEST.onRequestStart();
+        }
+        if (LOAD_STYLE != null) {
+            LatteLoader.showLoading(CONTEXT,LOAD_STYLE);
         }
         switch (method) {
             case GET:
@@ -70,7 +85,7 @@ public class RestClient {
     }
 
     private Callback<String> getRequestCallBack() {
-        return new RequestCallbacks(REQUEST, SUCCESS, FAILURE, ERROR);
+        return new RequestCallbacks(REQUEST, SUCCESS, FAILURE, ERROR,LOAD_STYLE);
     }
 
     public final void get() {

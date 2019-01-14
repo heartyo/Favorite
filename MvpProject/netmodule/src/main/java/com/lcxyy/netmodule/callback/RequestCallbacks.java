@@ -1,5 +1,10 @@
 package com.lcxyy.netmodule.callback;
 
+import android.os.Handler;
+
+import com.lcxyy.netmodule.ui.LatteLoader;
+import com.lcxyy.netmodule.ui.LoadStyle;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -9,12 +14,16 @@ public class RequestCallbacks implements Callback<String> {
     private final ISuccess SUCCESS;
     private final IFailure FAILURE;
     private final IError ERROR;
+    private final LoadStyle LOAD_STYLE;
 
-    public RequestCallbacks(IRequest request, ISuccess success, IFailure failure, IError error) {
+    private static final Handler HANDLER = new Handler();
+    public RequestCallbacks(IRequest request, ISuccess success,
+                            IFailure failure, IError error,LoadStyle loadStyle) {
         this.REQUEST = request;
         this.SUCCESS = success;
         this.FAILURE = failure;
         this.ERROR = error;
+        this.LOAD_STYLE = loadStyle;
     }
 
     @Override
@@ -30,6 +39,7 @@ public class RequestCallbacks implements Callback<String> {
                 ERROR.onError(response.code(), response.message());
             }
         }
+        stopLoading();
     }
 
     @Override
@@ -39,6 +49,18 @@ public class RequestCallbacks implements Callback<String> {
         }
         if (REQUEST != null) {
             REQUEST.onRequestEnd();
+        }
+        stopLoading();
+    }
+
+    private void stopLoading() {
+        if (LOAD_STYLE != null) {
+            HANDLER.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    LatteLoader.stopLoading();
+                }
+            }, 5000);
         }
     }
 }

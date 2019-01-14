@@ -1,9 +1,12 @@
 package com.lcxyy.netmodule;
 
+import android.content.Context;
+
 import com.lcxyy.netmodule.callback.IError;
 import com.lcxyy.netmodule.callback.IFailure;
 import com.lcxyy.netmodule.callback.IRequest;
 import com.lcxyy.netmodule.callback.ISuccess;
+import com.lcxyy.netmodule.ui.LoadStyle;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -12,14 +15,17 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 public class RestClientBuilder {
-    private String mUrl;
+    private String mUrl = null;
+
     private static final Map<String, Object> PARAMS = RestCreator.getParams();
 
-    private IRequest mIReqquest;
-    private ISuccess mISuccess;
-    private IFailure mIFailure;
-    private IError mIError;
-    private RequestBody mBody;
+    private IRequest mIReqquest = null;
+    private ISuccess mISuccess = null;
+    private IFailure mIFailure = null;
+    private IError mIError = null;
+    private RequestBody mBody = null;
+    private Context mContext = null;
+    private LoadStyle mLoadStyle = null;
 
     RestClientBuilder() {
 
@@ -65,8 +71,22 @@ public class RestClientBuilder {
         return this;
     }
 
+    public final RestClientBuilder loader(Context context, LoadStyle loadStyle) {
+        this.mContext = context;
+        this.mLoadStyle = loadStyle;
+        return this;
+    }
+
+    public final RestClientBuilder loader(Context context) {
+        this.mContext = context;
+        this.mLoadStyle = LoadStyle.BallClipRotateIndicator;
+        return this;
+    }
+
 
     public final RestClient build() {
-        return new RestClient(mUrl, PARAMS, mIReqquest, mISuccess, mIFailure, mIError, mBody);
+        return new RestClient(mUrl, PARAMS, mIReqquest
+                , mISuccess, mIFailure, mIError, mBody,
+                mContext, mLoadStyle);
     }
 }
