@@ -39,7 +39,7 @@ public class RestClient {
     private void request(HttpMethod method) {
         final RestService service = RestCreator.getRestService();
         Call<String> call = null;
-        if (REQUEST == null) {
+        if (REQUEST != null) {
             REQUEST.onRequestStart();
         }
         switch (method) {

@@ -2,6 +2,7 @@ package com.lcxyy.mvpproject;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.lcxyy.netmodule.RestClient;
 import com.lcxyy.netmodule.callback.IError;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
                 .success(new ISuccess() {
                     @Override
                     public void onSuccess(String response) {
-
+                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                     }
                 })
                 .error(new IError() {
