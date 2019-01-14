@@ -10,12 +10,16 @@ import com.lcxyy.netmodule.callback.RequestCallbacks;
 import com.lcxyy.netmodule.ui.LatteLoader;
 import com.lcxyy.netmodule.ui.LoadStyle;
 
+import java.io.File;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.http.Multipart;
 
 public class RestClient {
     private final String URL;
@@ -25,12 +29,12 @@ public class RestClient {
     private final IFailure FAILURE;
     private final IError ERROR;
     private final RequestBody BODY;
-
+    private final File FILE;
     private LoadStyle LOAD_STYLE;
     private Context CONTEXT;
     public RestClient(String url, Map<String, Object> params,
                       IRequest resquest, ISuccess success,
-                      IFailure failure, IError error, RequestBody body,
+                      IFailure failure, IError error, RequestBody body,File file,
                         Context context,LoadStyle loadStyle
     ) {
         this.URL = url;
@@ -40,6 +44,7 @@ public class RestClient {
         this.FAILURE = failure;
         this.ERROR = error;
         this.BODY = body;
+        this.FILE = file;
         this.CONTEXT = context;
         this.LOAD_STYLE = loadStyle;
     }
@@ -71,10 +76,15 @@ public class RestClient {
                 call = service.put(URL, PARAMS);
                 break;
             case PUT_RAW:
+                call = service.PutRaw(URL, BODY);
                 break;
             case POST_RAW:
+                call = service.postRaw(URL, BODY);
                 break;
             case UPLOAD:
+                final RequestBody requestBody = RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()), FILE);
+                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", FILE.getName(),requestBody);
+                call = RestCreator.getRestService().upload(URL, body);
                 break;
             default:
                 break;
@@ -94,12 +104,26 @@ public class RestClient {
     }
 
     public final void post() {
-        request(HttpMethod.POST);
+        if (BODY == null) {
+            request(HttpMethod.POST);
+        } else {
+            if (!PARAMS.isEmpty()) {
+                throw new RuntimeException("params is must null");
+            }
+            request(HttpMethod.POST_RAW);
+        }
 
     }
 
     public final void put() {
-        request(HttpMethod.PUT);
+        if (BODY == null) {
+            request(HttpMethod.PUT);
+        } else {
+            if (!PARAMS.isEmpty()) {
+                throw new RuntimeException("params is must null");
+            }
+            request(HttpMethod.PUT_RAW);
+        }
 
     }
 

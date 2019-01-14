@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
                 .success(new ISuccess() {
                     @Override
                     public void onSuccess(String response) {
-                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                     }
                 })
                 .error(new IError() {

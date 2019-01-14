@@ -8,6 +8,7 @@ import com.lcxyy.netmodule.callback.IRequest;
 import com.lcxyy.netmodule.callback.ISuccess;
 import com.lcxyy.netmodule.ui.LoadStyle;
 
+import java.io.File;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -26,6 +27,7 @@ public class RestClientBuilder {
     private RequestBody mBody = null;
     private Context mContext = null;
     private LoadStyle mLoadStyle = null;
+    private File mFile = null;
 
     RestClientBuilder() {
 
@@ -38,6 +40,15 @@ public class RestClientBuilder {
 
     public final RestClientBuilder params(WeakHashMap<String, Object> params) {
         PARAMS.putAll(params);
+        return this;
+    }
+
+    public final RestClientBuilder file(File file) {
+        this.mFile = file;
+        return this;
+    }
+    public final RestClientBuilder file(String file) {
+        this.mFile = new File(file);
         return this;
     }
 
@@ -86,7 +97,7 @@ public class RestClientBuilder {
 
     public final RestClient build() {
         return new RestClient(mUrl, PARAMS, mIReqquest
-                , mISuccess, mIFailure, mIError, mBody,
+                , mISuccess, mIFailure, mIError, mBody,mFile,
                 mContext, mLoadStyle);
     }
 }
