@@ -7,6 +7,7 @@ import com.lcxyy.netmodule.callback.IFailure;
 import com.lcxyy.netmodule.callback.IRequest;
 import com.lcxyy.netmodule.callback.ISuccess;
 import com.lcxyy.netmodule.callback.RequestCallbacks;
+import com.lcxyy.netmodule.download.DownloadHandler;
 import com.lcxyy.netmodule.ui.LatteLoader;
 import com.lcxyy.netmodule.ui.LoadStyle;
 
@@ -30,15 +31,32 @@ public class RestClient {
     private final IError ERROR;
     private final RequestBody BODY;
     private final File FILE;
+    private final String DOWNLOAD_DIR;
+    private final String EXTENSION;
+    private final String NAME;
+
     private LoadStyle LOAD_STYLE;
     private Context CONTEXT;
-    public RestClient(String url, Map<String, Object> params,
-                      IRequest resquest, ISuccess success,
-                      IFailure failure, IError error, RequestBody body,File file,
-                        Context context,LoadStyle loadStyle
+
+    public RestClient(String url,
+                      Map<String, Object> params,
+                      String downloadDir,
+                      String extension,
+                      String name,
+                      IRequest resquest,
+                      ISuccess success,
+                      IFailure failure,
+                      IError error,
+                      RequestBody body,
+                      File file,
+                      Context context,
+                      LoadStyle loadStyle
     ) {
         this.URL = url;
         PARAMS.putAll(params);
+        this.DOWNLOAD_DIR = downloadDir;
+        this.EXTENSION = extension;
+        this.NAME = name;
         this.REQUEST = resquest;
         this.SUCCESS = success;
         this.FAILURE = failure;
@@ -60,7 +78,7 @@ public class RestClient {
             REQUEST.onRequestStart();
         }
         if (LOAD_STYLE != null) {
-            LatteLoader.showLoading(CONTEXT,LOAD_STYLE);
+            LatteLoader.showLoading(CONTEXT, LOAD_STYLE);
         }
         switch (method) {
             case GET:
@@ -83,7 +101,7 @@ public class RestClient {
                 break;
             case UPLOAD:
                 final RequestBody requestBody = RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()), FILE);
-                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", FILE.getName(),requestBody);
+                final MultipartBody.Part body = MultipartBody.Part.createFormData("file", FILE.getName(), requestBody);
                 call = RestCreator.getRestService().upload(URL, body);
                 break;
             default:
@@ -95,7 +113,7 @@ public class RestClient {
     }
 
     private Callback<String> getRequestCallBack() {
-        return new RequestCallbacks(REQUEST, SUCCESS, FAILURE, ERROR,LOAD_STYLE);
+        return new RequestCallbacks(REQUEST, SUCCESS, FAILURE, ERROR, LOAD_STYLE);
     }
 
     public final void get() {
@@ -130,5 +148,11 @@ public class RestClient {
     public final void delete() {
         request(HttpMethod.DELETE);
 
+    }
+
+    public final void download() {
+        new DownloadHandler(URL,
+                REQUEST,
+                SUCCESS,FAILURE,ERROR,DOWNLOAD_DIR,EXTENSION,NAME).handDownload();
     }
 }
