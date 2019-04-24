@@ -44,15 +44,20 @@ public class SpashActivity extends AppCompatActivity implements ITimerListener {
     @Override
     public void onTimer() {
         if (mTvTimer != null) {
-            mTvTimer.setText(MessageFormat.format("跳过\n{0}s", mCount));
-            mCount--;
-            if (mCount < 0) {
-                if (mTimer != null) {
-                    mTimer.cancel();
-                    mTimer = null;
-                }
-                startActivity(new Intent(SpashActivity.this,GuideActivity.class));
-            }
+          runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                  mTvTimer.setText(MessageFormat.format("跳过\n{0}s", mCount));
+                  mCount--;
+                  if (mCount < 0) {
+                      if (mTimer != null) {
+                          mTimer.cancel();
+                          mTimer = null;
+                      }
+                      startActivity(new Intent(SpashActivity.this,GuideActivity2.class));
+                  }
+              }
+          });
         }
     }
 }

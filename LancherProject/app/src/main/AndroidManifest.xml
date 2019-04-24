@@ -22,6 +22,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_guide"
             android:theme="@style/FullscreenTheme" />
+        <activity android:name=".GuideActivity2" />
     </application>
 
 </manifest>
