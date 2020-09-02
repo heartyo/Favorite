@@ -1,0 +1,2 @@
+include ':app', ':member', ':login', ':basic', ':common', ':member'
+rootProject.name='AppShell'
