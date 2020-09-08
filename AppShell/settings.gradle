@@ -1,2 +1,2 @@
-include ':app', ':member', ':login', ':basic', ':common', ':member'
+include ':app', ':member', ':login', ':basic', ':common', ':annotation', ':annotation_complier', ':router'
 rootProject.name='AppShell'

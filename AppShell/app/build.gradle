@@ -25,7 +25,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation  rootProject.ext.dependencies.appcompat
     implementation  rootProject.ext.dependencies.constraintlayout
-
+    annotationProcessor project(path: ':annotation_complier')
     rootProject.ext.dependencies.other.each{
         implementation project(it)
     }
@@ -33,6 +33,7 @@ dependencies {
         implementation project(path: ':member')
         implementation project(path: ':login')
     }
+
 
 
 }

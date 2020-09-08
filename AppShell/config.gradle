@@ -6,7 +6,7 @@ ext {
             targetSdkVersion : 29,
             versionCode      : 1,
             versionName      : "1.0.0",
-            is_app           : true
+            is_app           : false
 
     ]
 
@@ -18,7 +18,7 @@ ext {
 
             ],
             other:[
-                    ':basic',':common'
+                    ':basic',':common', ':router',':annotation'
             ]
 
     ]
